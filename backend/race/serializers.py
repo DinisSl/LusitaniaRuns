@@ -10,7 +10,7 @@ class RaceSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('user', 'birthDate','phoneNumber', 'gender', 'clothingSize')
+        fields = ('user','image', 'birthDate','phoneNumber', 'gender', 'clothingSize')
 
 class RunnerSignupSerializer(serializers.ModelSerializer):
     class Meta:

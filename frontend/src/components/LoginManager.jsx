@@ -46,6 +46,9 @@ const LoginManager = () => {
           <Button onClick={handleLogout} variant="destructive">
             Logout
           </Button>
+          <Button className="btn" onClick={()=>navigate("/profile")}>
+            Profile
+          </Button>
         </>
       ) : (
         <>

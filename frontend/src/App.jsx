@@ -6,6 +6,7 @@ import Signup from "./pages/Signup.jsx";
 import RunnerSignup from "@/pages/RunnerSignup.jsx";
 import VolunteerSignup from "@/pages/VolunteerSignup.jsx";
 import Admin from "@/pages/Admin.jsx";
+import Profile from "@/pages/Profile.jsx";
 
 const App = () => {
     return (
@@ -14,6 +15,7 @@ const App = () => {
                 <Route index element={<Homepage/>}/>
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/profile" element={<Profile/>}/>
                 <Route path="/runnersignup" element={<RunnerSignup/>}/>
                 <Route path="/volunteersignup" element={<VolunteerSignup/>}/>
                 <Route path="/admin" element={<Admin/>}/>

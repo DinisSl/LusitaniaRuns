@@ -5,13 +5,13 @@ app_name = 'race'
 
 urlpatterns = [
     path('api/races/', views.races),
-    path('api/race/<int:race_id>', views.race_detail),
+    path('api/race/<int:race_id>/', views.race_detail),
     path('api/profiles/', views.profiles),
-    path('api/profile/<int:profile_id>', views.profile_detail),
+    path("api/profile/", views.profile_view),
     path('api/runnersignups/', views.runnersignups),
-    path('api/runnersignup/<int:runnersignup_id>', views.runnersignup_detail),
+    path('api/runnersignup/<int:runnersignup_id>/', views.runnersignup_detail),
     path('api/volunteersignups/', views.volunteersignups),
-    path('api/volunteersignups/<int:volunteersignup_id>', views.volunteersignup_detail),
+    path('api/volunteersignups/<int:volunteersignup_id>/', views.volunteersignup_detail),
 
 
 
