@@ -1,14 +1,14 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer.jsx";
-import Counter from "../components/Counter.jsx";
-import Description from "@/components/Description.jsx";
+import Race from "@/pages/Race.jsx";
 
 const Homepage = () => {
   return (
     <>
       <Header/>
-      <Counter/>
-      <Description/>
+      {/*<Counter/>*/}
+      {/*<Description/>*/}
+      <Race/>
       <Footer/>
     </>
   );

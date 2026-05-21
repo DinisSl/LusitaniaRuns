@@ -5,7 +5,7 @@ from .models import *
 class RaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Race
-        fields = ('id', 'name', 'date')
+        fields = ('id', 'name', 'date', 'image', 'details')
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:

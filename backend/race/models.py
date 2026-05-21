@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 class Race(models.Model):
     name = models.CharField(max_length=200)
     date = models.DateTimeField('Data e hora da corrida')
+    image = models.ImageField(upload_to='race_pics', default='default.png')
+    details = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
         return self.name
