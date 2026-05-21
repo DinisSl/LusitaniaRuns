@@ -1,8 +1,4 @@
-import {
-  NavigationMenu,
-  NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList,
-  NavigationMenuTrigger, navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -25,55 +21,51 @@ const NavMenu = () => {
       .catch(() => console.log('user not Staff'));
   }, []);
 
+  const triggerStyle = "px-4 py-2 text-sm font-medium border rounded-lg hover:bg-slate-100 transition-colors";
+
   return (
-    <div>
-      <NavigationMenu>
-        <NavigationMenuList className="gap-2">
+    <nav className="flex items-center gap-2">
 
-          <NavigationMenuItem className="border rounded-lg">
-            <NavigationMenuTrigger>Corridas</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              {races.map((race) => (
-                <NavigationMenuLink
-                  key={race.id}
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
-                  <Link to={`/race/${race.id}`}>{race.name}</Link>
-                </NavigationMenuLink>
-              ))}
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+      <DropdownMenu>
+        <DropdownMenuTrigger className={triggerStyle}>
+          Corridas
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {races.map((race) => (
+            <DropdownMenuItem key={race.id} asChild>
+              <Link to={`/race/${race.id}`} className="w-full cursor-pointer">
+                {race.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-          <NavigationMenuItem className="border rounded-lg">
-            <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-              <Link to="/">Home</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+      <Link to="/" className={triggerStyle}>
+        Home
+      </Link>
 
-          {isStaff && (
-            <NavigationMenuItem className="border rounded-lg">
-              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link to="/admin">Participantes</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          )}
+      {isStaff && (
+        <Link to="/admin" className={triggerStyle}>
+          Participantes
+        </Link>
+      )}
 
-          <NavigationMenuItem className="border rounded-lg">
-            <NavigationMenuTrigger>Inscrições</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link to="/runnersignup">Inscrição Corredor</Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link to="/volunteersignup">Inscrição Voluntário</Link>
-              </NavigationMenuLink>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+      <DropdownMenu>
+        <DropdownMenuTrigger className={triggerStyle}>
+          Inscrições
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem asChild>
+            <Link to="/runnersignup" className="w-full cursor-pointer">Inscrição Corredor</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/volunteersignup" className="w-full cursor-pointer">Inscrição Voluntário</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-        </NavigationMenuList>
-      </NavigationMenu>
-    </div>
+    </nav>
   );
 }
 

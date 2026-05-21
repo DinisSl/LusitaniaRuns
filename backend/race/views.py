@@ -99,6 +99,14 @@ def runnersignups(request):
         except Profile.DoesNotExist:
             return Response({'msg': 'Profile not found. Complete your profile first.'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        race_id = request.data.get('race')
+
+        if VolunteerSignup.objects.filter(user=profile, race_id=race_id).exists():
+            return Response({'msg': 'Já está inscrito como voluntário nesta corrida.'}, status=status.HTTP_400_BAD_REQUEST)
+        if RunnerSignup.objects.filter(user=profile, race_id=race_id).exists():
+            return Response({'msg': 'Já está inscrito como corredor nesta corrida.'}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = RunnerSignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=profile, state="PENDENTE")
@@ -142,6 +150,13 @@ def volunteersignups(request):
         except Profile.DoesNotExist:
             return Response({'msg': 'Profile not found.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        race_id = request.data.get('race')
+
+        if VolunteerSignup.objects.filter(user=profile, race_id=race_id).exists():
+            return Response({'msg': 'Já está inscrito como voluntário nesta corrida.'},status=status.HTTP_400_BAD_REQUEST)
+        if RunnerSignup.objects.filter(user=profile, race_id=race_id).exists():
+            return Response({'msg': 'Já está inscrito como corredor nesta corrida.'},status=status.HTTP_400_BAD_REQUEST)
+
         serializer = VolunteerSignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=profile, state="PENDENTE")
@@ -170,6 +185,21 @@ def volunteersignup_detail(request, volunteersignup_id):
         volunteersignup.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_signup_status(request, race_id):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        return Response({'status': 'no_profile'}, status=status.HTTP_200_OK)
+
+    if RunnerSignup.objects.filter(user=profile, race_id=race_id).exists():
+        return Response({'status': 'runner'}, status=status.HTTP_200_OK)
+
+    if VolunteerSignup.objects.filter(user=profile, race_id=race_id).exists():
+        return Response({'status': 'volunteer'}, status=status.HTTP_200_OK)
+
+    return Response({'status': 'none'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def signup(request):
