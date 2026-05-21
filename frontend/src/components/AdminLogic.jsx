@@ -16,7 +16,7 @@ const AdminLogic = () => {
   const URL_VOLUNTEERSIGUPS = 'http://localhost:8000/race/api/volunteersignups/';
 
   useEffect(() => {
-  axios.get(URL_RUNNERSIGUPS)
+  axios.get(URL_RUNNERSIGUPS,{withCredentials: true})
     .then((response) => {
       // Usa response.data.results se houver paginação, senão usa response.data
       const data = response.data.results ? response.data.results : response.data;
@@ -26,7 +26,7 @@ const AdminLogic = () => {
 }, []);
 
 useEffect(() => {
-  axios.get(URL_VOLUNTEERSIGUPS)
+  axios.get(URL_VOLUNTEERSIGUPS,{withCredentials: true})
     .then((response) => {
       const data = response.data.results ? response.data.results : response.data;
       setVoluntarios(data);
