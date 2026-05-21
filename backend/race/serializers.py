@@ -25,6 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = (
             'user',
+            'image',
             'birthDate',
             'phoneNumber',
             'gender',
