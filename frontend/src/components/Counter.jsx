@@ -1,43 +1,38 @@
 import { useState, useEffect } from "react";
 
-const Counter = () => {
-    const dataEvento = new Date("2026-12-31T23:59:59");
+const calcularTempoRestante = (dataEvento) => {
+  const diferenca = dataEvento - new Date();
+  if (diferenca <= 0) return { dias: 0, horas: 0, minutos: 0, segundos: 0 };
+  return {
+    dias: Math.floor(diferenca / 86400000),
+    horas: Math.floor((diferenca / 3600000) % 24),
+    minutos: Math.floor((diferenca / 60000) % 60),
+    segundos: Math.floor((diferenca / 1000) % 60),
+  };
+};
 
-    const calcularTempoRestante = () => {
-        const agora = new Date();
-        const diferenca = dataEvento - agora;
+const Counter = ({ race }) => {
+  const dataEvento = new Date(race.date);
+  const [tempo, setTempo] = useState(() => calcularTempoRestante(dataEvento));
 
-        if (diferenca <= 0) {
-            return {
-                dias: 0,
-                horas: 0,
-                minutos: 0,
-                segundos: 0
-            };
-        }
+  useEffect(() => {
+    const intervalo = setInterval(() => setTempo(calcularTempoRestante(dataEvento)), 1000);
+    return () => clearInterval(intervalo);
+  }, [race.date]);
 
-        return {
-            dias: Math.floor(diferenca / (1000 * 60 * 60 * 24)),
-            horas: Math.floor((diferenca / (1000 * 60 * 60)) % 24),
-            minutos: Math.floor((diferenca / (1000 * 60)) % 60),
-            segundos: Math.floor((diferenca / 1000) % 60)
-        };
-    };
-
-    const [tempo, setTempo] = useState(calcularTempoRestante());
-
-    useEffect(() => {
-        const intervalo = setInterval(() => {
-            setTempo(calcularTempoRestante());
-        }, 1000);
-
-        return () => clearInterval(intervalo);
-    }, []);
-
-    return (
-        <div className="w-full bg-muted py-2 text-center text-sm font-medium text-muted-foreground border-y border-border">
-            Faltam {tempo.dias}d : {tempo.horas}h : {tempo.minutos}m : {tempo.segundos}s
-        </div>
+  return (
+      <div className="flex items-center gap-8">
+        {[["Dias", tempo.dias], ["Horas", tempo.horas], ["Min", tempo.minutos], ["Seg", tempo.segundos]].map(([label, val]) => (
+          <div key={label} className="text-center">
+            <span className="block text-3xl font-semibold tabular-nums text-foreground leading-none">
+              {String(val).padStart(2, "0")}
+            </span>
+            <span className="block mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
     );
 };
 

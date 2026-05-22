@@ -39,24 +39,26 @@ const LoginManager = () => {
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-3">
       {first_name && last_name ? (
         <>
-          <p className="font-medium text-foreground">Olá {first_name} {last_name}!</p>
-          <Button onClick={handleLogout} variant="destructive">
+          <p className="text-sm text-muted-foreground">
+            Olá, <span className="font-medium text-foreground">{first_name} {last_name}</span>
+          </p>
+          <Button onClick={handleLogout} variant="destructive" size="sm">
             Logout
           </Button>
-          <Button className="btn" onClick={()=>navigate("/profile")}>
+          <Button size="sm" onClick={() => navigate("/profile")}>
             Profile
           </Button>
         </>
       ) : (
         <>
-          <p className="font-medium text-foreground">Olá, não estás logado(a)!</p>
-          <Button onClick={() => navigate('/login')}>
+          <p className="text-sm text-muted-foreground">Olá, não estás logado(a)!</p>
+          <Button size="sm" onClick={() => navigate('/login')}>
             Login
           </Button>
-          <Button onClick={() => navigate('/signup')} variant="outline">
+          <Button size="sm" onClick={() => navigate('/signup')} variant="outline">
             Signup
           </Button>
         </>
