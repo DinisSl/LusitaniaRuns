@@ -269,3 +269,86 @@ def user_view(request):
         'is_staff': request.user.is_staff,
 
     })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_runner_signups(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        return Response(
+            {'error': 'Perfil não encontrado'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    signups = RunnerSignup.objects.filter(user=profile)
+    serializer = RunnerSignupSerializer(signups, many=True)
+
+    return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_runner_signup(request, pk):
+    try:
+        profile = Profile.objects.get(user=request.user)
+
+        signup = RunnerSignup.objects.get(
+            id=pk,
+            user=profile
+        )
+
+    except RunnerSignup.DoesNotExist:
+        return Response(
+            {'error': 'Inscrição não encontrada'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    signup.delete()
+
+    return Response(
+        {'msg': 'Inscrição cancelada'},
+        status=status.HTTP_204_NO_CONTENT
+    )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_volunteer_signups(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        return Response(
+            {'error': 'Perfil não encontrado'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    signups = VolunteerSignup.objects.filter(user=profile)
+    serializer = VolunteerSignupSerializer(signups, many=True)
+
+    return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_volunteer_signup(request, pk):
+    try:
+        profile = Profile.objects.get(user=request.user)
+
+        signup = VolunteerSignup.objects.get(
+            id=pk,
+            user=profile
+        )
+
+    except VolunteerSignup.DoesNotExist:
+        return Response(
+            {'error': 'Inscrição não encontrada'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    signup.delete()
+
+    return Response(
+        {'msg': 'Inscrição cancelada'},
+        status=status.HTTP_204_NO_CONTENT
+    )

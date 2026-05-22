@@ -33,7 +33,7 @@ const NavMenu = () => {
       )}
 
       {location.pathname === '/' ? (
-        <Link to="/" className={triggerStyle}>
+        <Link to="/mysignups" className={triggerStyle}>
           Minhas Inscrições
         </Link>
       ) : (

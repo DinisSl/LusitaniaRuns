@@ -13,6 +13,10 @@ urlpatterns = [
     path('api/volunteersignups/', views.volunteersignups),
     path('api/volunteersignups/<int:volunteersignup_id>/', views.volunteersignup_detail),
     path('api/status/<int:race_id>/', views.check_signup_status),
+    path("api/my-runnersignups/", views.my_runner_signups),
+    path('api/my-runnersignups/<int:pk>/', views.delete_runner_signup),
+    path("api/my-volunteersignups/", views.my_volunteer_signups),
+    path('api/my-volunteersignups/<int:pk>/', views.delete_volunteer_signup),
 
 
 

@@ -8,6 +8,7 @@ import VolunteerSignup from "@/pages/VolunteerSignup.jsx";
 import Admin from "@/pages/Admin.jsx";
 import Profile from "@/pages/Profile.jsx";
 import Race from "@/pages/Race.jsx";
+import MySignups from "@/pages/MySignups.jsx";
 
 const App = () => {
     return (
@@ -21,6 +22,7 @@ const App = () => {
                 <Route path="/runnersignup" element={<RunnerSignup/>}/>
                 <Route path="/volunteersignup" element={<VolunteerSignup/>}/>
                 <Route path="/admin" element={<Admin/>}/>
+                <Route path="/mysignups" element={<MySignups />} />
             </Routes>
         </BrowserRouter>
     )
