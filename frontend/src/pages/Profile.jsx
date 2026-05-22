@@ -72,7 +72,7 @@ const Profile = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+        <div className="flex-1 bg-background text-foreground flex items-center justify-center p-8">
             <div className="w-full max-w-2xl space-y-6">
                 <Card>
                     <CardHeader>

@@ -7,10 +7,9 @@ const Footer = () => {
             <div className="flex gap-7.5 w-full">
 
                 <div className="flex-1">
-                    <h4 className="mb-4 text-foreground font-semibold text-lg">Corrida S. Silvestre</h4>
-                    <p className="mb-2">Evento anual de corrida na cidade do Porto, onde toda a gente se diverte.</p>
-                    <p className="mb-2">Data: 31 Dezembro</p>
-                    <strong className="text-foreground block mt-2">Venha correr connosco!</strong>
+                    <h4 className="mb-4 text-foreground font-semibold text-lg">Corridas de Portugal</h4>
+                    <p className="mb-2">Um site onde se pode ver todas as corridas e onde toda a gente se diverte.</p>
+                    <strong className="text-foreground block mt-8">Venha correr connosco!</strong>
                 </div>
 
                 <div className="flex-1">
@@ -28,14 +27,6 @@ const Footer = () => {
                         <li className="mb-2"><a href="https://tvi.iol.pt/" className="hover:text-foreground transition-colors no-underline">TVI</a></li>
                         <li className="mb-2"><a href="https://www.edp.pt/" className="hover:text-foreground transition-colors no-underline">edp</a></li>
                         <li className="mb-2"><a href="https://mimosa.pt/" className="hover:text-foreground transition-colors no-underline">Mimosa</a></li>
-                    </ul>
-                </div>
-
-                <div className="flex-1">
-                    <h4 className="mb-4 text-foreground font-semibold text-lg">Links</h4>
-                    <ul className="list-none p-0">
-                        <li className="mb-2"><a href="./index.html" className="hover:text-foreground transition-colors no-underline">Início</a></li>
-                        <li className="mb-2"><a href="form_volun.html" className="hover:text-foreground transition-colors no-underline">Inscrição voluntário</a></li>
                     </ul>
                 </div>
 

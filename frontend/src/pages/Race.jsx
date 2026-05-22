@@ -3,9 +3,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Description from "../components/Description.jsx";
 import RaceTitle from "@/components/RaceTitle.jsx";
-import Header from "@/components/Header.jsx";
-import Footer from "@/components/Footer.jsx";
-
 const Race = () => {
   const { id } = useParams();
   const [race, setRace] = useState(null);

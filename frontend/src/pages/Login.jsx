@@ -5,26 +5,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+
+const URL_LOGIN = 'http://localhost:8000/race/api/login/';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const navigate = useNavigate();
-
-  const URL_LOGIN = 'http://localhost:8000/race/api/login/';
+  const { refresh } = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    axios.post(
-        URL_LOGIN,
-        { email, password },
-        { withCredentials: true }
-      ).then(() => {
-        console.log('logged in');
-        navigate('/');
-      })
+    axios.post(URL_LOGIN, { email, password }, { withCredentials: true })
+      .then(() => refresh())
+      .then(() => navigate('/'))
       .catch(() => console.log('login failed'));
   };
 
@@ -57,9 +52,7 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col gap-2 pt-2">
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
+              <Button type="submit" className="w-full">Login</Button>
               <Button
                 type="button"
                 variant="outline"
@@ -74,6 +67,6 @@ const Login = () => {
       </Card>
     </div>
   );
-}
+};
 
 export default Login;
