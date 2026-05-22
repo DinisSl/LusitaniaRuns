@@ -15,6 +15,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class RunnerSignupSerializer(serializers.ModelSerializer):
     user_name = serializers.StringRelatedField(source='user', read_only=True)
     race_name = serializers.StringRelatedField(source='race', read_only=True)
+    state = serializers.CharField(required=False, default="PENDENTE")
 
     class Meta:
         model = RunnerSignup
@@ -24,6 +25,7 @@ class RunnerSignupSerializer(serializers.ModelSerializer):
 class VolunteerSignupSerializer(serializers.ModelSerializer):
     user_name = serializers.StringRelatedField(source='user', read_only=True)
     race_name = serializers.StringRelatedField(source='race', read_only=True)
+    state = serializers.CharField(required=False, default="PENDENTE")
 
     class Meta:
         model = VolunteerSignup

@@ -43,7 +43,7 @@ const VolunteerSignup = () => {
     if (!selectedRole) return;
 
 
-    axios.post(VOLUNTEERSIGNUPS_URL, { race: selectedRace, role: selectedRole }, {
+    axios.post(VOLUNTEERSIGNUPS_URL, { race: selectedRace, role: selectedRole ,state: "PENDENTE" }, {
       headers: { "X-CSRFToken": getCSRFToken() },
       withCredentials: true,
     })

@@ -48,7 +48,7 @@ const SignupForm = ({ signupUrl, title, extraFields, onSignup }) => {
       return;
     }
 
-    axios.post(signupUrl, { race: selectedRace }, {
+    axios.post(signupUrl, { race: selectedRace,state: "PENDENTE" }, {
       headers: { "X-CSRFToken": getCSRFToken() },
       withCredentials: true,
     })

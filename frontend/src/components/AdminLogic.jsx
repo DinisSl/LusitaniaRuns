@@ -8,6 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge"; // Importa o Badge
 import { Button } from "@/components/ui/button"; // Importa o Button
 
@@ -52,7 +59,6 @@ const AdminLogic = () => {
     },
   }
 );
-
     if (isRunner) {
       setParticipantes(prev => prev.map(p => p.id === id ? { ...p, state: newState } : p));
     } else {
@@ -63,7 +69,26 @@ const AdminLogic = () => {
   }
 };
 
-  // Componente para renderizar a Badge correta
+
+  const handleUpdateClassification = async (id, newClassification) => {
+  try {
+    await axios.put(
+      `${URL_RUNNERSIGUPS}${id}/`,
+      { classification: newClassification },
+      {
+        withCredentials: true,
+        headers: { "X-CSRFToken": getCSRFToken() },
+      }
+    );
+    setParticipantes((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, classification: newClassification } : p))
+    );
+  } catch (error) {
+    console.error("Erro ao atualizar classificação:", error);
+  }
+};
+
+
   const StateBadge = ({ state }) => {
     switch (state) {
       case "APROVADO":
@@ -75,6 +100,12 @@ const AdminLogic = () => {
         return <Badge variant="secondary">Pendente</Badge>;
     }
   };
+
+  const getApprovedCount = (raceName) => {
+  return participantesCorredores.filter(
+    (r) => r.race_name === raceName && r.state === "APROVADO"
+  ).length;
+};
 
   return (
     <div className="p-6 space-y-10">
@@ -104,7 +135,27 @@ const AdminLogic = () => {
                   <TableRow key={runner.id}>
                     <TableCell className="font-medium">{runner.user_name}</TableCell>
                     <TableCell>{runner.race_name}</TableCell>
-                    <TableCell>{runner.classification ?? "N/A"}</TableCell>
+                    <TableCell>
+                        {runner.state === "APROVADO" ? (
+                          <Select
+                            value={runner.classification ? String(runner.classification) : undefined}
+                            onValueChange={(val) => handleUpdateClassification(runner.id, val)}
+                          >
+                            <SelectTrigger className="w-[100px]">
+                              <SelectValue placeholder="N/A" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from({ length: getApprovedCount(runner.race_name) }, (_, i) => i + 1).map((num) => (
+                                <SelectItem key={num} value={String(num)}>
+                                  {num}º
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <span className="text-gray-400">N/A</span>
+                        )}
+                      </TableCell>
                     <TableCell><StateBadge state={runner.state} /></TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button size="sm" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50" onClick={() => handleUpdateState(runner.id, "APROVADO", true)}>
