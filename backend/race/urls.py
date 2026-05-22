@@ -9,7 +9,7 @@ urlpatterns = [
     path('api/profiles/', views.profiles),
     path("api/profile/", views.profile_view),
     path('api/runnersignups/', views.runnersignups),
-    path('api/runnersignup/<int:runnersignup_id>/', views.runnersignup_detail),
+    path('api/runnersignups/<int:runnersignup_id>/', views.runnersignup_detail),
     path('api/volunteersignups/', views.volunteersignups),
     path('api/volunteersignups/<int:volunteersignup_id>/', views.volunteersignup_detail),
     path('api/status/<int:race_id>/', views.check_signup_status),

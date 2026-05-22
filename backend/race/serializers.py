@@ -19,7 +19,7 @@ class RunnerSignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = RunnerSignup
         fields = ('id', 'user', 'user_name', 'signupDate', 'classification', 'race', 'race_name', 'adminComment', 'state')
-        read_only_fields = ('user', 'state', 'signupDate')
+        read_only_fields = ('user', 'signupDate')
 
 class VolunteerSignupSerializer(serializers.ModelSerializer):
     user_name = serializers.StringRelatedField(source='user', read_only=True)
@@ -28,4 +28,4 @@ class VolunteerSignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = VolunteerSignup
         fields = ('id', 'user', 'user_name', 'signupDate', 'role', 'race', 'race_name', 'adminComment', 'state')
-        read_only_fields = ('user', 'signupDate', 'state')
+        read_only_fields = ('user', 'signupDate')
