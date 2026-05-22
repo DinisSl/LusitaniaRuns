@@ -1,19 +1,28 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel.jsx";
+import { Card, CardContent } from "@/components/ui/card.jsx";
 import Autoplay from 'embla-carousel-autoplay';
+
+const formatarData = (dataIso) => {
+    if (!dataIso) return "";
+    const data = new Date(dataIso);
+    const meses = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+    return `${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
+};
 
 const RaceList = () => {
   const URL_RACES = "http://localhost:8000/race/api/races/";
   const [racesList, setRacesList] = useState([]);
 
-  // Plugin de autoplay (desliza da direita para a esquerda em loop)
   const autoplayPlugin = Autoplay({
     delay: 4000,
-    stopOnInteraction: true,   // Para quando o usuário clicar nas setas ou nos cards
-    stopOnMouseEnter: false,   // Mantém a correr mesmo com o rato em cima (opcional)
+    stopOnInteraction: true,
+    stopOnMouseEnter: false,
   });
 
   useEffect(() => {
@@ -47,9 +56,12 @@ const RaceList = () => {
                       />
                     </div>
                     <CardContent className="p-5 flex flex-col gap-2 text-left grow">
-                      <h3 className="text-xl font-bold leading-tight line-clamp-2 break-words">
+                      <h3 className="text-2xl font-bold leading-tight line-clamp-2 break-words">
                         {race.name}
                       </h3>
+                      <h6 className="text-lg text-muted-foreground leading-tight line-clamp-2 break-words">
+                        {formatarData(race.date)}
+                      </h6>
                       <p className="text-sm text-muted-foreground line-clamp-3 break-words">
                         {race.details}
                       </p>

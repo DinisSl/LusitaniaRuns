@@ -6,12 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Header from "@/components/Header.jsx";
-import Footer from "@/components/Footer.jsx";
 
 const SIGNUP_URL = 'http://localhost:8000/race/api/signup/';
 
-const SignupLogic = () => {
+const Signup = () => {
   const [first_name, setFirstName] = useState('');
   const [last_name, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -35,7 +33,7 @@ const SignupLogic = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex-1 flex items-center justify-center bg-background">
       <Card className="w-full max-w-sm shadow-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Signup</CardTitle>
@@ -100,19 +98,6 @@ const SignupLogic = () => {
         </CardContent>
       </Card>
     </div>
-  );
-};
-
-
-
-const Signup = () => {
-
-  return (
-    <>
-    <Header/>
-    <SignupLogic/>
-    <Footer/>
-    </>
   );
 };
 

@@ -5,10 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import Footer from "@/components/Footer.jsx";
-import Header from "@/components/Header.jsx";
 
-const LoginLogic = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -31,7 +29,7 @@ const LoginLogic = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex-1 flex items-center justify-center bg-background">
       <Card className="w-full max-w-sm shadow-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
@@ -75,19 +73,6 @@ const LoginLogic = () => {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-
-
-const Login = () => {
-
-  return (
-    <>
-    <Header/>
-    <LoginLogic/>
-    <Footer/>
-    </>
   );
 }
 

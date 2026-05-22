@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const calcularTempoRestante = (dataEvento) => {
   const diferenca = dataEvento - new Date();
@@ -11,29 +13,43 @@ const calcularTempoRestante = (dataEvento) => {
   };
 };
 
-const Counter = ({ race }) => {
-  const dataEvento = new Date(race.date);
-  const [tempo, setTempo] = useState(() => calcularTempoRestante(dataEvento));
+const Counter = () => {
+  const { id } = useParams();
+  const [dataEvento, setDataEvento] = useState(null);
+  const [tempo, setTempo] = useState(null);
 
   useEffect(() => {
-    const intervalo = setInterval(() => setTempo(calcularTempoRestante(dataEvento)), 1000);
+    axios.get(`http://localhost:8000/race/api/race/${id}/`)
+      .then((res) => setDataEvento(new Date(res.data.date)))
+      .catch((err) => console.error("Erro ao ir buscar a corrida:", err));
+  }, [id]);
+
+  useEffect(() => {
+    if (!dataEvento) return;
+    setTempo(calcularTempoRestante(dataEvento));
+    const intervalo = setInterval(
+      () => setTempo(calcularTempoRestante(dataEvento)),
+      1000
+    );
     return () => clearInterval(intervalo);
-  }, [race.date]);
+  }, [dataEvento]);
+
+  if (!tempo) return null;
 
   return (
-      <div className="flex items-center gap-8">
-        {[["Dias", tempo.dias], ["Horas", tempo.horas], ["Min", tempo.minutos], ["Seg", tempo.segundos]].map(([label, val]) => (
-          <div key={label} className="text-center">
-            <span className="block text-3xl font-semibold tabular-nums text-foreground leading-none">
-              {String(val).padStart(2, "0")}
-            </span>
-            <span className="block mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              {label}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
+    <div className="flex items-center gap-8">
+      {[["Dias", tempo.dias], ["Horas", tempo.horas], ["Min", tempo.minutos], ["Seg", tempo.segundos]].map(([label, val]) => (
+        <div key={label} className="text-center">
+          <span className="block text-3xl font-semibold tabular-nums text-foreground leading-none">
+            {String(val).padStart(2, "0")}
+          </span>
+          <span className="block mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">
+            {label}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default Counter;

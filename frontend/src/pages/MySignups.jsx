@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import Header from "@/components/Header.jsx";
 import SignupList from "@/components/SignupList.jsx";
-import Footer from "@/components/Footer.jsx";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,11 +32,9 @@ const MySignups = () => {
   if (loading) {
     return (
       <>
-        <Header />
         <div className="flex items-center justify-center min-h-[40vh]">
           <p className="text-muted-foreground animate-pulse">A carregar...</p>
         </div>
-        <Footer />
       </>
     );
   }
@@ -46,7 +42,6 @@ const MySignups = () => {
   if (authError) {
     return (
       <>
-        <Header />
         <div className="flex items-center justify-center min-h-[40vh] px-4">
           <Card className="w-full max-w-sm text-center shadow-md">
             <CardHeader>
@@ -62,15 +57,13 @@ const MySignups = () => {
             </CardContent>
           </Card>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Header />
-      <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+      <div className="w-4/5 mx-auto px-4 py-8 space-y-6">
         <div>
           <h2 className="text-2xl font-bold text-foreground">As minhas inscrições</h2>
           {firstName && (
@@ -82,7 +75,6 @@ const MySignups = () => {
         <hr className="border-border" />
         <SignupList />
       </div>
-      <Footer />
     </>
   );
 };

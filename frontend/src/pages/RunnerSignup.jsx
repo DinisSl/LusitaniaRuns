@@ -7,14 +7,12 @@ const RUNNERSIGNUPS_URL = "http://localhost:8000/race/api/runnersignups/";
 const RunnerSignup = () => {
   return (
     <div>
-      <Header />
       <div className="p-10 flex items-start justify-center">
         <SignupForm
           signupUrl={RUNNERSIGNUPS_URL}
           title="Inscrição Corredor"
         />
       </div>
-      <Footer />
     </div>
   );
 };

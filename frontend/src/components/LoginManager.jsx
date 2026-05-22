@@ -45,20 +45,20 @@ const LoginManager = () => {
           <p className="text-sm text-muted-foreground">
             Olá, <span className="font-medium text-foreground">{first_name} {last_name}</span>
           </p>
-          <Button onClick={handleLogout} variant="destructive" size="sm">
+          <Button onClick={handleLogout} variant="destructive" className="h-auto px-3 py-1.5">
             Logout
           </Button>
-          <Button size="sm" onClick={() => navigate("/profile")}>
+          <Button onClick={() => navigate("/profile")} className="h-auto px-3 py-1.5">
             Profile
           </Button>
         </>
       ) : (
         <>
           <p className="text-sm text-muted-foreground">Olá, não estás logado(a)!</p>
-          <Button size="sm" onClick={() => navigate('/login')}>
+          <Button onClick={() => navigate('/login')} className="h-auto px-3 py-1.5">
             Login
           </Button>
-          <Button size="sm" onClick={() => navigate('/signup')} variant="outline">
+          <Button onClick={() => navigate('/signup')} variant="outline" className="h-auto px-3 py-1.5">
             Signup
           </Button>
         </>

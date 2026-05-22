@@ -18,7 +18,7 @@ const NavMenu = () => {
   return (
     <nav className="flex items-center gap-2">
 
-      {/*Não mostrar o botão Home se não estivermos na Homepage e mostrar em vez o botão voltar*/}
+      {/*Não mostrar o botão Home se não estivermos na Homepage*/}
       {location.pathname !== '/' && (
         <Link to="/" className={triggerStyle}>
           Home
@@ -32,11 +32,13 @@ const NavMenu = () => {
         </Link>
       )}
 
+      {/*Se estivermos na homepage mostrar Minhas Inscrições*/}
+      {/*se não mas se tivermos numa pagina de uma corrida mostrar as varias Inscrições*/}
       {location.pathname === '/' ? (
         <Link to="/mysignups" className={triggerStyle}>
           Minhas Inscrições
         </Link>
-      ) : (
+      ) : location.pathname.startsWith('/race/') ? (
         <DropdownMenu>
           <DropdownMenuTrigger className={triggerStyle}>
             Inscrições
@@ -50,7 +52,7 @@ const NavMenu = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )}
+      ) : null}
 
 
     </nav>

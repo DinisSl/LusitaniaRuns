@@ -73,7 +73,6 @@ const VolunteerSignup = () => {
 
   return (
     <div>
-      <Header />
       <div className="p-10 flex items-start justify-center">
         <SignupForm
           signupUrl={VOLUNTEERSIGNUPS_URL}
@@ -82,7 +81,6 @@ const VolunteerSignup = () => {
           onSignup={handleVolunteerSignup}
         />
       </div>
-      <Footer />
     </div>
   );
 };

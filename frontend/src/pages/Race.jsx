@@ -20,12 +20,10 @@ const Race = () => {
 
   return (
     <div className="flex-1 flex flex-col">
-      <Header race={race}/>
       <div className="flex flex-col items-center py-10">
         <RaceTitle race={race} />
         <Description race={race} />
       </div>
-      <Footer/>
     </div>
   );
 }

@@ -12,7 +12,7 @@ const formatarData = (dataIso) => {
 
 const Texto = ({ race }) => {
     return (
-        <Card id="box1" className="flex-1 bg-card text-card-foreground border-border shadow-sm">
+        <Card id="box1" className="flex-1 bg-card whitespace-pre-wrap text-card-foreground border-border shadow-sm">
             <CardHeader>
                 <CardTitle className="text-3xl font-bold">{race.name}</CardTitle>
                 <CardDescription className="text-lg font-medium text-muted-foreground">
@@ -28,13 +28,13 @@ const Texto = ({ race }) => {
 
 const Imagem = ({ race }) => {
     return (
-        <Card id="box2" className="overflow-hidden bg-card border-border w-2/5 shrink-0 shadow-sm">
+        <Card id="box2" className="flex-1 flex flex-col overflow-hidden bg-card border-border shadow-sm">
             <img
                 src={`http://localhost:8000${race.image}`}
                 alt={race.name}
-                className="w-full h-auto block"
+                className="w-full flex-1 object-cover block"
             />
-            <div className="p-4 ">
+            <div className="p-4">
                 <figcaption className="text-xl font-medium text-center text-muted-foreground">
                     {race.name}
                 </figcaption>
@@ -45,7 +45,7 @@ const Imagem = ({ race }) => {
 
 const Description = ({ race }) => {
     return (
-        <div className="flex flex-row items-center gap-6 p-6 w-4/5 mx-auto bg-background text-foreground">
+        <div className="flex flex-row items-stretch gap-6 p-6 w-4/5 mx-auto bg-background text-foreground">
             <Texto race={race} />
             <Imagem race={race} />
         </div>

@@ -1,14 +1,14 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer.jsx";
-import RaceList from "@/pages/RaceList.jsx";
+import RaceList from "../components/RaceList.jsx";
 
 const Homepage = () => {
   return (
-    <>
-      <Header/>
-      <RaceList/>
-      <Footer/>
-    </>
+    <div className="min-h-screen flex flex-col">
+      <main className="grow">
+        <h1 className="text-center font-bold text-4xl mt-4">Corridas em Portugal</h1>
+        <RaceList/>
+      </main>
+
+    </div>
   );
 }
 
