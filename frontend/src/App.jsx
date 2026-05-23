@@ -10,7 +10,7 @@ import Profile from "./pages/Profile.jsx";
 import Race from "./pages/Race.jsx";
 import MySignups from "./pages/MySignups.jsx";
 
-import Layout from "./components/Layout.jsx";
+import Layout from "./components/Layout/Layout.jsx";
 import {AuthProvider} from "@/context/AuthContext.jsx";
 
 const App = () => (

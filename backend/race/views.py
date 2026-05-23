@@ -2,10 +2,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from .serializers import *
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, parser_classes
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import datetime
 
 
@@ -67,7 +66,7 @@ def profiles(request):
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
-@parser_classes([MultiPartParser, FormParser])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
 def profile_view(request):
     try:
         profile = Profile.objects.get(user=request.user)
@@ -79,6 +78,14 @@ def profile_view(request):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        if first_name is not None:
+            request.user.first_name = first_name
+        if last_name is not None:
+            request.user.last_name = last_name
+        request.user.save()
+
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save(user=request.user)
@@ -116,17 +123,24 @@ def runnersignups(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def runnersignup_detail(request, runnersignup_id):
     try:
         runnersignup = RunnerSignup.objects.get(pk=runnersignup_id)
     except RunnerSignup.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    # Só o dono ou staff podem aceder
+    if runnersignup.user.user != request.user and not request.user.is_staff:
+        return Response({'msg': 'Sem permissão'}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == 'GET':
         serializer = RunnerSignupSerializer(runnersignup)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
+        if not request.user.is_staff:
+            return Response({'msg': 'Apenas administradores podem alterar inscrições'}, status=status.HTTP_403_FORBIDDEN)
         serializer = RunnerSignupSerializer(runnersignup, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -135,7 +149,7 @@ def runnersignup_detail(request, runnersignup_id):
 
     elif request.method == 'DELETE':
         runnersignup.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'POST'])
@@ -167,24 +181,32 @@ def volunteersignups(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def volunteersignup_detail(request, volunteersignup_id):
     try:
         volunteersignup = VolunteerSignup.objects.get(pk=volunteersignup_id)
     except VolunteerSignup.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    if volunteersignup.user.user != request.user and not request.user.is_staff:
+        return Response({'msg': 'Sem permissão'}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == 'GET':
         serializer = VolunteerSignupSerializer(volunteersignup)
         return Response(serializer.data)
+
     elif request.method == 'PUT':
+        if not request.user.is_staff:
+            return Response({'msg': 'Apenas administradores podem alterar inscrições'}, status=status.HTTP_403_FORBIDDEN)
         serializer = VolunteerSignupSerializer(volunteersignup, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     elif request.method == 'DELETE':
         volunteersignup.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

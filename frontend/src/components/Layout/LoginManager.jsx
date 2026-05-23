@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from "@/components/ui/button.jsx";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext.jsx";
 
 const URL_LOGOUT = 'http://localhost:8000/race/api/logout/';
 

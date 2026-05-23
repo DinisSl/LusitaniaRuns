@@ -1,6 +1,6 @@
-import NavMenu from "@/components/NavMenu.jsx";
-import LoginManager from "@/components/LoginManager.jsx";
-import Counter from "@/components/Counter.jsx";
+import NavMenu from "@/components/Layout/NavMenu.jsx";
+import LoginManager from "@/components/Layout/LoginManager.jsx";
+import Counter from "@/components/Layout/Counter.jsx";
 import Switch from "./DarkModeSwitch.jsx"; // Verifica se o caminho está correto
 import { useLocation } from "react-router-dom";
 
