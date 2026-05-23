@@ -1,3 +1,4 @@
+// src/pages/AdminLogic.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -25,141 +26,176 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import CreateRace from "@/components/CreateRace";
 
-const getCSRFToken = () =>
-  document.cookie
+// Função para obter o token CSRF
+const obterTokenCSRF = () => {
+  const cookieCSRF = document.cookie
     .split("; ")
-    .find((row) => row.startsWith("csrftoken="))
-    ?.split("=")[1];
+    .find((linha) => linha.startsWith("csrftoken="));
+  return cookieCSRF ? cookieCSRF.split("=")[1] : null;
+};
 
 const AdminLogic = () => {
-  const [participantesCorredores, setParticipantes] = useState([]);
-  const [participantesVoluntarios, setVoluntarios] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogComment, setDialogComment] = useState("");
-  const [dialogId, setDialogId] = useState(null);
-  const [dialogIsRunner, setDialogIsRunner] = useState(true);
+  // Estado para listas de inscrições
+  const [inscricoesCorredores, setInscricoesCorredores] = useState([]);
+  const [inscricoesVoluntarios, setInscricoesVoluntarios] = useState([]);
 
-  const URL_RUNNERSIGUPS = "http://localhost:8000/race/api/runnersignups/";
-  const URL_VOLUNTEERSIGUPS = "http://localhost:8000/race/api/volunteersignups/";
+  // Estado para o diálogo de comentário
+  const [dialogAberto, setDialogAberto] = useState(false);
+  const [comentarioDialog, setComentarioDialog] = useState("");
+  const [idSelecionado, setIdSelecionado] = useState(null);
+  const [isCorredorSelecionado, setIsCorredorSelecionado] = useState(true);
 
+  // URLs da API
+  const URL_CORREDORES = "http://localhost:8000/race/api/runnersignups/";
+  const URL_VOLUNTARIOS = "http://localhost:8000/race/api/volunteersignups/";
+
+  // Funções de busca (definidas antes do useEffect)
+  const buscarInscricoesCorredores = async () => {
+    try {
+      const resposta = await axios.get(URL_CORREDORES, { withCredentials: true });
+      const dados = resposta.data.results || resposta.data;
+      setInscricoesCorredores(dados);
+    } catch (erro) {
+      console.error("Erro ao buscar corredores:", erro);
+    }
+  };
+
+  const buscarInscricoesVoluntarios = async () => {
+    try {
+      const resposta = await axios.get(URL_VOLUNTARIOS, { withCredentials: true });
+      const dados = resposta.data.results || resposta.data;
+      setInscricoesVoluntarios(dados);
+    } catch (erro) {
+      console.error("Erro ao buscar voluntários:", erro);
+    }
+  };
+
+  // Carregar inscrições ao montar o componente
   useEffect(() => {
-    axios
-      .get(URL_RUNNERSIGUPS, { withCredentials: true })
-      .then((response) => {
-        const data = response.data.results ? response.data.results : response.data;
-        setParticipantes(data);
-      })
-      .catch((error) => console.error("Erro corredores:", error));
+    buscarInscricoesCorredores();
+    buscarInscricoesVoluntarios();
   }, []);
 
-  useEffect(() => {
-    axios
-      .get(URL_VOLUNTEERSIGUPS, { withCredentials: true })
-      .then((response) => {
-        const data = response.data.results ? response.data.results : response.data;
-        setVoluntarios(data);
-      })
-      .catch((error) => console.error("Erro voluntários:", error));
-  }, []);
-
-  const handleUpdateState = async (id, newState, isRunner) => {
-    const url = isRunner ? `${URL_RUNNERSIGUPS}${id}/` : `${URL_VOLUNTEERSIGUPS}${id}/`;
+  // Função genérica para atualizar um campo qualquer (estado, classificação, comentário)
+  const atualizarInscricao = async (id, dadosAtualizados, isCorredor) => {
+    const url = isCorredor ? `${URL_CORREDORES}${id}/` : `${URL_VOLUNTARIOS}${id}/`;
     try {
-      await axios.put(
-        url,
-        { state: newState },
-        {
-          withCredentials: true,
-          headers: { "X-CSRFToken": getCSRFToken() },
-        }
-      );
-      if (isRunner) {
-        setParticipantes((prev) => prev.map((p) => (p.id === id ? { ...p, state: newState } : p)));
-      } else {
-        setVoluntarios((prev) => prev.map((v) => (v.id === id ? { ...v, state: newState } : v)));
-      }
-    } catch (error) {
-      console.error("Erro ao atualizar estado:", error);
+      await axios.put(url, dadosAtualizados, {
+        withCredentials: true,
+        headers: { "X-CSRFToken": obterTokenCSRF() },
+      });
+      return true;
+    } catch (erro) {
+      console.error("Erro ao atualizar inscrição:", erro);
+      return false;
     }
   };
 
-  const handleUpdateClassification = async (id, newClassification) => {
-    try {
-      await axios.put(
-        `${URL_RUNNERSIGUPS}${id}/`,
-        { classification: newClassification },
-        {
-          withCredentials: true,
-          headers: { "X-CSRFToken": getCSRFToken() },
-        }
-      );
-      setParticipantes((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, classification: newClassification } : p))
-      );
-    } catch (error) {
-      console.error("Erro ao atualizar classificação:", error);
-    }
-  };
-
-  const handleUpdateComment = async (id, newComment, isRunner) => {
-    const url = isRunner ? `${URL_RUNNERSIGUPS}${id}/` : `${URL_VOLUNTEERSIGUPS}${id}/`;
-    try {
-      await axios.put(
-        url,
-        { adminComment: newComment },
-        {
-          withCredentials: true,
-          headers: { "X-CSRFToken": getCSRFToken() },
-        }
-      );
-      if (isRunner) {
-        setParticipantes((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, adminComment: newComment } : p))
+  // Atualizar estado (APROVADO/REJEITADO)
+  const atualizarEstado = async (id, novoEstado, isCorredor) => {
+    const sucesso = await atualizarInscricao(id, { state: novoEstado }, isCorredor);
+    if (sucesso) {
+      if (isCorredor) {
+        setInscricoesCorredores((listaAtual) =>
+          listaAtual.map((item) => {
+            if (item.id === id) {
+              return { ...item, state: novoEstado };
+            }
+            return item;
+          })
         );
       } else {
-        setVoluntarios((prev) =>
-          prev.map((v) => (v.id === id ? { ...v, adminComment: newComment } : v))
+        setInscricoesVoluntarios((listaAtual) =>
+          listaAtual.map((item) => {
+            if (item.id === id) {
+              return { ...item, state: novoEstado };
+            }
+            return item;
+          })
         );
       }
-    } catch (error) {
-      console.error("Erro ao atualizar comentário:", error);
     }
   };
 
-  const openEditDialog = (id, currentComment, isRunner) => {
-    setDialogId(id);
-    setDialogComment(currentComment || "");
-    setDialogIsRunner(isRunner);
-    setDialogOpen(true);
-  };
-
-  const saveComment = () => {
-    if (dialogId !== null) {
-      handleUpdateComment(dialogId, dialogComment, dialogIsRunner);
-      setDialogOpen(false);
+  // Atualizar classificação (apenas corredores)
+  const atualizarClassificacao = async (id, novaClassificacao) => {
+    const sucesso = await atualizarInscricao(id, { classification: novaClassificacao }, true);
+    if (sucesso) {
+      setInscricoesCorredores((listaAtual) =>
+        listaAtual.map((item) => {
+          if (item.id === id) {
+            return { ...item, classification: novaClassificacao };
+          }
+          return item;
+        })
+      );
     }
   };
 
-  const StateBadge = ({ state }) => {
-    switch (state) {
-      case "APROVADO":
-        return <Badge className="bg-green-600 hover:bg-green-600 text-white">Aprovado</Badge>;
-      case "REJEITADO":
-        return <Badge variant="destructive">Rejeitado</Badge>;
-      case "PENDENTE":
-      default:
-        return <Badge variant="secondary">Pendente</Badge>;
+  // Atualizar comentário administrativo
+  const atualizarComentario = async (id, novoComentario, isCorredor) => {
+    const sucesso = await atualizarInscricao(id, { adminComment: novoComentario }, isCorredor);
+    if (sucesso) {
+      if (isCorredor) {
+        setInscricoesCorredores((listaAtual) =>
+          listaAtual.map((item) => {
+            if (item.id === id) {
+              return { ...item, adminComment: novoComentario };
+            }
+            return item;
+          })
+        );
+      } else {
+        setInscricoesVoluntarios((listaAtual) =>
+          listaAtual.map((item) => {
+            if (item.id === id) {
+              return { ...item, adminComment: novoComentario };
+            }
+            return item;
+          })
+        );
+      }
     }
   };
 
-  const getApprovedCount = (raceName) => {
-    return participantesCorredores.filter((r) => r.race_name === raceName && r.state === "APROVADO").length;
+  // Abrir diálogo para editar comentário
+  const abrirDialogComentario = (id, comentarioAtual, isCorredor) => {
+    setIdSelecionado(id);
+    setComentarioDialog(comentarioAtual || "");
+    setIsCorredorSelecionado(isCorredor);
+    setDialogAberto(true);
+  };
+
+  // Salvar comentário do diálogo
+  const salvarComentario = () => {
+    if (idSelecionado !== null) {
+      atualizarComentario(idSelecionado, comentarioDialog, isCorredorSelecionado);
+      setDialogAberto(false);
+    }
+  };
+
+  // Componente para exibir o badge de estado
+  const BadgeEstado = ({ estado }) => {
+    if (estado === "APROVADO") return <Badge className="bg-green-600 text-white">Aprovado</Badge>;
+    if (estado === "REJEITADO") return <Badge variant="destructive">Rejeitado</Badge>;
+    return <Badge variant="secondary">Pendente</Badge>;
+  };
+
+  // Contar quantos aprovados existem numa corrida (para gerar opções de classificação)
+  const contarAprovadosPorCorrida = (nomeCorrida) => {
+    return inscricoesCorredores.filter(
+      (inscricao) => inscricao.race_name === nomeCorrida && inscricao.state === "APROVADO"
+    ).length;
   };
 
   return (
-    <div className="p-6 space-y-10">
-      {/* Tabela de Corredores */}
+    <div className="p-6 space-y-8">
+      {/* Formulário para criar nova corrida */}
+      <CreateRace />
+
+      {/* Seção de Corredores */}
       <div>
         <h2 className="text-xl font-bold mb-4">Inscrições de Corredores</h2>
         <div className="rounded-md border overflow-x-auto">
@@ -170,33 +206,33 @@ const AdminLogic = () => {
                 <TableHead>Corrida</TableHead>
                 <TableHead>Classificação</TableHead>
                 <TableHead>Estado</TableHead>
-                <TableHead>Comentário</TableHead>
+                <TableHead>Comentário Admin</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {participantesCorredores.length === 0 ? (
+              {inscricoesCorredores.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-4">
                     Nenhum participante encontrado.
                   </TableCell>
                 </TableRow>
               ) : (
-                participantesCorredores.map((runner) => (
-                  <TableRow key={runner.id}>
-                    <TableCell className="font-medium">{runner.user_name}</TableCell>
-                    <TableCell>{runner.race_name}</TableCell>
+                inscricoesCorredores.map((corredor) => (
+                  <TableRow key={corredor.id}>
+                    <TableCell className="font-medium">{corredor.user_name}</TableCell>
+                    <TableCell>{corredor.race_name}</TableCell>
                     <TableCell>
-                      {runner.state === "APROVADO" ? (
+                      {corredor.state === "APROVADO" ? (
                         <Select
-                          value={runner.classification ? String(runner.classification) : undefined}
-                          onValueChange={(val) => handleUpdateClassification(runner.id, val)}
+                          value={corredor.classification ? String(corredor.classification) : undefined}
+                          onValueChange={(valor) => atualizarClassificacao(corredor.id, valor)}
                         >
                           <SelectTrigger className="w-[100px]">
                             <SelectValue placeholder="N/A" />
                           </SelectTrigger>
                           <SelectContent>
-                            {Array.from({ length: getApprovedCount(runner.race_name) }, (_, i) => i + 1).map(
+                            {Array.from({ length: contarAprovadosPorCorrida(corredor.race_name) }, (_, i) => i + 1).map(
                               (num) => (
                                 <SelectItem key={num} value={String(num)}>
                                   {num}º
@@ -210,15 +246,15 @@ const AdminLogic = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <StateBadge state={runner.state} />
+                      <BadgeEstado estado={corredor.state} />
                     </TableCell>
                     <TableCell className="max-w-xs">
                       <div className="flex items-center gap-2">
-                        <span className="truncate">{runner.adminComment || "—"}</span>
+                        <span className="truncate">{corredor.adminComment || "—"}</span>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => openEditDialog(runner.id, runner.adminComment, true)}
+                          onClick={() => abrirDialogComentario(corredor.id, corredor.adminComment, true)}
                         >
                           ✏️
                         </Button>
@@ -229,14 +265,14 @@ const AdminLogic = () => {
                         size="sm"
                         variant="outline"
                         className="border-green-600 text-green-600 hover:bg-green-50"
-                        onClick={() => handleUpdateState(runner.id, "APROVADO", true)}
+                        onClick={() => atualizarEstado(corredor.id, "APROVADO", true)}
                       >
                         Aprovar
                       </Button>
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => handleUpdateState(runner.id, "REJEITADO", true)}
+                        onClick={() => atualizarEstado(corredor.id, "REJEITADO", true)}
                       >
                         Rejeitar
                       </Button>
@@ -249,7 +285,7 @@ const AdminLogic = () => {
         </div>
       </div>
 
-      {/* Tabela de Voluntários */}
+      {/* Seção de Voluntários */}
       <div>
         <h2 className="text-xl font-bold mb-4">Inscrições de Voluntários</h2>
         <div className="rounded-md border overflow-x-auto">
@@ -260,33 +296,33 @@ const AdminLogic = () => {
                 <TableHead>Corrida</TableHead>
                 <TableHead>Função</TableHead>
                 <TableHead>Estado</TableHead>
-                <TableHead>Comentário</TableHead>
+                <TableHead>Comentário Admin</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {participantesVoluntarios.length === 0 ? (
+              {inscricoesVoluntarios.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-4">
                     Nenhum voluntário encontrado.
                   </TableCell>
                 </TableRow>
               ) : (
-                participantesVoluntarios.map((volunteer) => (
-                  <TableRow key={volunteer.id}>
-                    <TableCell className="font-medium">{volunteer.user_name}</TableCell>
-                    <TableCell>{volunteer.race_name}</TableCell>
-                    <TableCell>{volunteer.role}</TableCell>
+                inscricoesVoluntarios.map((voluntario) => (
+                  <TableRow key={voluntario.id}>
+                    <TableCell className="font-medium">{voluntario.user_name}</TableCell>
+                    <TableCell>{voluntario.race_name}</TableCell>
+                    <TableCell>{voluntario.role}</TableCell>
                     <TableCell>
-                      <StateBadge state={volunteer.state} />
+                      <BadgeEstado estado={voluntario.state} />
                     </TableCell>
                     <TableCell className="max-w-xs">
                       <div className="flex items-center gap-2">
-                        <span className="truncate">{volunteer.adminComment || "—"}</span>
+                        <span className="truncate">{voluntario.adminComment || "—"}</span>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => openEditDialog(volunteer.id, volunteer.adminComment, false)}
+                          onClick={() => abrirDialogComentario(voluntario.id, voluntario.adminComment, false)}
                         >
                           ✏️
                         </Button>
@@ -297,14 +333,14 @@ const AdminLogic = () => {
                         size="sm"
                         variant="outline"
                         className="border-green-600 text-green-600 hover:bg-green-50"
-                        onClick={() => handleUpdateState(volunteer.id, "APROVADO", false)}
+                        onClick={() => atualizarEstado(voluntario.id, "APROVADO", false)}
                       >
                         Aprovar
                       </Button>
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => handleUpdateState(volunteer.id, "REJEITADO", false)}
+                        onClick={() => atualizarEstado(voluntario.id, "REJEITADO", false)}
                       >
                         Rejeitar
                       </Button>
@@ -317,25 +353,25 @@ const AdminLogic = () => {
         </div>
       </div>
 
-      {/* Dialog para editar comentário */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {/* Diálogo de edição de comentário */}
+      <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Editar comentário</DialogTitle>
+            <DialogTitle>Editar comentário administrativo</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Textarea
-              value={dialogComment}
-              onChange={(e) => setDialogComment(e.target.value)}
+              value={comentarioDialog}
+              onChange={(e) => setComentarioDialog(e.target.value)}
               placeholder="Escreva aqui o comentário sobre a inscrição..."
               rows={5}
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setDialogAberto(false)}>
               Cancelar
             </Button>
-            <Button onClick={saveComment}>Salvar</Button>
+            <Button onClick={salvarComentario}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
