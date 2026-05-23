@@ -15,7 +15,7 @@ const routeNames = {
   race: "Corrida",
   runnersignup: "Inscrição Corredor",
   volunteersignup: "Inscrição Voluntário",
-  admin: "Participantes",
+  admin: "Minha Área",
   mysignups: "Minhas Inscrições",
 };
 
