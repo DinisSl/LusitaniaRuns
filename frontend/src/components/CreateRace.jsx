@@ -34,7 +34,7 @@ const CreateRace = () => {
       .find((linha) => linha.startsWith("csrftoken="));
     return cookieCSRF ? cookieCSRF.split("=")[1] : null;
   };
-
+// Zod define as regras no raceSchema; react-hook-form integra via zodResolver
   const {
     register,
     handleSubmit,
