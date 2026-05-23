@@ -28,6 +28,10 @@ const ROLE_OPTIONS = [
   { value: "PACER", label: "Pacer" },
 ];
 
+export const ROLE_LABEL_MAP = Object.fromEntries(
+  ROLE_OPTIONS.map(r => [r.value, r.label])
+);
+
 const VolunteerSignup = () => {
   const [selectedRole, setSelectedRole] = useState("");
 
