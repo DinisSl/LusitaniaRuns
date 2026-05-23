@@ -28,7 +28,7 @@ const NavMenu = () => {
       {/*Botão exclusivo para o admin*/}
       {isStaff && (
         <Link to="/admin" className={triggerStyle}>
-          Participantes
+          Minha Área
         </Link>
       )}
 
