@@ -47,11 +47,11 @@ const AdminLogic = () => {
   const [idSelecionado, setIdSelecionado] = useState(null);
   const [isCorredorSelecionado, setIsCorredorSelecionado] = useState(true);
 
-  // URLs da API
+
   const URL_CORREDORES = "http://localhost:8000/race/api/runnersignups/";
   const URL_VOLUNTARIOS = "http://localhost:8000/race/api/volunteersignups/";
 
-  // Funções de busca (definidas antes do useEffect)
+
   const buscarInscricoesCorredores = async () => {
     try {
       const resposta = await axios.get(URL_CORREDORES, { withCredentials: true });
@@ -72,7 +72,7 @@ const AdminLogic = () => {
     }
   };
 
-  // Carregar inscrições ao montar o componente
+
   useEffect(() => {
     buscarInscricoesCorredores();
     buscarInscricoesVoluntarios();
@@ -134,7 +134,7 @@ const AdminLogic = () => {
     }
   };
 
-  // Atualizar comentário administrativo
+  // Atualizar comentário
   const atualizarComentario = async (id, novoComentario, isCorredor) => {
     const sucesso = await atualizarInscricao(id, { adminComment: novoComentario }, isCorredor);
     if (sucesso) {
@@ -160,7 +160,7 @@ const AdminLogic = () => {
     }
   };
 
-  // Abrir diálogo para editar comentário
+  // editar comentário
   const abrirDialogComentario = (id, comentarioAtual, isCorredor) => {
     setIdSelecionado(id);
     setComentarioDialog(comentarioAtual || "");
@@ -168,7 +168,7 @@ const AdminLogic = () => {
     setDialogAberto(true);
   };
 
-  // Salvar comentário do diálogo
+  // Salvar comentário
   const salvarComentario = () => {
     if (idSelecionado !== null) {
       atualizarComentario(idSelecionado, comentarioDialog, isCorredorSelecionado);
@@ -176,7 +176,7 @@ const AdminLogic = () => {
     }
   };
 
-  // Componente para exibir o badge de estado
+  // Componente para exibir o badge
   const BadgeEstado = ({ estado }) => {
     if (estado === "APROVADO") return <Badge className="bg-green-600 text-white">Aprovado</Badge>;
     if (estado === "REJEITADO") return <Badge variant="destructive">Rejeitado</Badge>;
