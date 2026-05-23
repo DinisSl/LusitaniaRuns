@@ -1,18 +1,10 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu.jsx";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 
 const NavMenu = () => {
-  const URL_USER = 'http://localhost:8000/race/api/user/';
-  const [isStaff, setIsStaff] = useState(false);
+  const { user } = useAuth();
   const location = useLocation();
-
-  useEffect(() => {
-    axios.get(URL_USER, { withCredentials: true })
-      .then((response) => setIsStaff(response.data.is_staff))
-      .catch(() => console.log('user not Staff'));
-  }, []);
 
   const triggerStyle = "px-3 py-1.5 text-sm font-medium border border-border rounded-md hover:bg-accent hover:text-accent-foreground transition-colors";
   return (
@@ -20,16 +12,12 @@ const NavMenu = () => {
 
       {/*Não mostrar o botão Home se não estivermos na Homepage*/}
       {location.pathname !== '/' && (
-        <Link to="/" className={triggerStyle}>
-          Home
-        </Link>
+        <Link to="/" className={triggerStyle}>Home</Link>
       )}
 
       {/*Botão exclusivo para o admin*/}
-      {isStaff && (
-        <Link to="/admin" className={triggerStyle}>
-          Minha Área
-        </Link>
+      {user?.is_staff && (
+        <Link to="/admin" className={triggerStyle}>Participantes</Link>
       )}
 
       {/*Se estivermos na homepage mostrar Minhas Inscrições*/}
