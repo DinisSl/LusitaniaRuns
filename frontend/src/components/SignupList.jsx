@@ -3,7 +3,14 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,8 +24,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ROLES } from "@/pages/Race";
 
+
 const URL_RUNNERSIGNUPS = "http://localhost:8000/race/api/my-runnersignups/";
 const URL_VOLUNTEERSIGNUPS = "http://localhost:8000/race/api/my-volunteersignups/";
+
 
 const getCSRFToken = () =>
   document.cookie
@@ -26,10 +35,9 @@ const getCSRFToken = () =>
     .find((row) => row.startsWith("csrftoken="))
     ?.split("=")[1];
 
-const StateBadge = ({ state }) => {
-  const normalized = state?.toUpperCase();
 
-  switch (normalized) {
+const StateBadge = ({ state }) => {
+  switch (state?.toUpperCase()) {
     case "APROVADO":
       return <Badge className="bg-green-600 hover:bg-green-600 text-white">Aprovado</Badge>;
     case "REJEITADO":
@@ -40,6 +48,7 @@ const StateBadge = ({ state }) => {
   }
 };
 
+
 const EmptyRow = ({ cols, message }) => (
   <TableRow>
     <TableCell colSpan={cols} className="text-center text-muted-foreground py-6">
@@ -47,6 +56,30 @@ const EmptyRow = ({ cols, message }) => (
     </TableCell>
   </TableRow>
 );
+
+
+const CancelButton = ({ onConfirm }) => (
+  <AlertDialog>
+    <AlertDialogTrigger asChild>
+      <Button variant="destructive" size="sm">Cancelar</Button>
+    </AlertDialogTrigger>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Cancelar inscrição?</AlertDialogTitle>
+        <AlertDialogDescription>
+          Esta ação não pode ser revertida. A tua inscrição será permanentemente removida.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Voltar</AlertDialogCancel>
+        <AlertDialogAction variant="destructive" onClick={onConfirm}>
+          Cancelar inscrição
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+);
+
 
 const SignupList = () => {
   const [runners, setRunners] = useState([]);
@@ -133,25 +166,7 @@ const SignupList = () => {
                     <TableCell className="text-muted-foreground">{r.adminComment || "—"}</TableCell>
                     <TableCell className="text-center">
                       {r.state?.toLowerCase() !== "cancelado" && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">Cancelar</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Cancelar inscrição?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Esta ação não pode ser revertida. A tua inscrição será permanentemente removida.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Voltar</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => cancelSignup(URL_RUNNERSIGNUPS, r.id)}>
-                                Cancelar inscrição
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <CancelButton onConfirm={() => cancelSignup(URL_RUNNERSIGNUPS, r.id)} />
                       )}
                     </TableCell>
                   </TableRow>
@@ -190,25 +205,7 @@ const SignupList = () => {
                     <TableCell className="text-muted-foreground">{v.adminComment || "—"}</TableCell>
                     <TableCell className="text-center">
                       {v.state?.toLowerCase() !== "cancelado" && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">Cancelar</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Cancelar inscrição?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Esta ação não pode ser revertida. A tua inscrição será permanentemente removida.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Voltar</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => cancelSignup(URL_VOLUNTEERSIGNUPS, v.id)}>
-                                  Cancelar inscrição
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <CancelButton onConfirm={() => cancelSignup(URL_VOLUNTEERSIGNUPS, v.id)} />
                       )}
                     </TableCell>
                   </TableRow>

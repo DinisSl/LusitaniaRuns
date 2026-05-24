@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,8 +30,6 @@ const Profile = () => {
 
   const URL_PROFILE = 'http://localhost:8000/race/api/profile/';
   const URL_USER = 'http://localhost:8000/race/api/user/';
-
-  const navigate = useNavigate();
 
   const getCSRFToken = () => {
     return document.cookie
