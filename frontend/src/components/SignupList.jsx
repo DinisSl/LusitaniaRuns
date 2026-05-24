@@ -22,19 +22,17 @@ const getCSRFToken = () =>
     .find((row) => row.startsWith("csrftoken="))
     ?.split("=")[1];
 
-const stateBadgeVariant = (state) => {
-  switch (state?.toLowerCase()) {
-    case "aprovado":
-    case "approved":
-      return "success";
-    case "pendente":
-    case "pending":
-      return "warning";
-    case "cancelado":
-    case "cancelled":
-      return "destructive";
+const StateBadge = ({ state }) => {
+  const normalized = state?.toUpperCase();
+
+  switch (normalized) {
+    case "APROVADO":
+      return <Badge className="bg-green-600 hover:bg-green-600 text-white">Aprovado</Badge>;
+    case "REJEITADO":
+      return <Badge variant="destructive">Rejeitado</Badge>;
+    case "PENDENTE":
     default:
-      return "secondary";
+      return <Badge variant="secondary">Pendente</Badge>;
   }
 };
 
@@ -129,7 +127,7 @@ const SignupList = () => {
                     <TableCell className="font-medium">{r.race_name}</TableCell>
                     <TableCell className="text-center">{r.classification ?? "—"}</TableCell>
                     <TableCell className="text-center">
-                      <Badge variant={stateBadgeVariant(r.state)}>{r.state}</Badge>
+                      <StateBadge state={r.state} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">{r.adminComment || "—"}</TableCell>
                     <TableCell className="text-center">
@@ -174,7 +172,7 @@ const SignupList = () => {
                     <TableCell className="font-medium">{v.race_name}</TableCell>
                     <TableCell>{ROLES[v.role] || v.role}</TableCell>
                     <TableCell className="text-center">
-                      <Badge variant={stateBadgeVariant(v.state)}>{v.state}</Badge>
+                      <StateBadge state={v.state} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">{v.adminComment || "—"}</TableCell>
                     <TableCell className="text-center">
