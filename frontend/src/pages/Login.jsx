@@ -12,15 +12,17 @@ const URL_LOGIN = 'http://localhost:8000/race/api/login/';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [erro, setErro] = useState('');
   const navigate = useNavigate();
   const { refresh } = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setErro('');
     axios.post(URL_LOGIN, { email, password }, { withCredentials: true })
       .then(() => refresh())
       .then(() => navigate('/'))
-      .catch(() => console.log('login failed'));
+      .catch(() => setErro('Credenciais inválidas. Tente novamente.'));
   };
 
   return (
@@ -50,6 +52,8 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
+            {erro && <p className="text-sm text-destructive">{erro}</p>}
 
             <div className="flex flex-col gap-2 pt-2">
               <Button type="submit" className="w-full">Login</Button>
