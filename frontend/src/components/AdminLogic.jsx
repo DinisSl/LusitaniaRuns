@@ -37,11 +37,11 @@ const obterTokenCSRF = () => {
 };
 
 const AdminLogic = () => {
-  // Estado para listas de inscrições
+
   const [inscricoesCorredores, setInscricoesCorredores] = useState([]);
   const [inscricoesVoluntarios, setInscricoesVoluntarios] = useState([]);
 
-  // Estado para o diálogo de comentário
+  //para o diálogo de comentário
   const [dialogAberto, setDialogAberto] = useState(false);
   const [comentarioDialog, setComentarioDialog] = useState("");
   const [idSelecionado, setIdSelecionado] = useState(null);
@@ -168,7 +168,7 @@ const AdminLogic = () => {
     setDialogAberto(true);
   };
 
-  // Salvar comentário
+
   const salvarComentario = () => {
     if (idSelecionado !== null) {
       atualizarComentario(idSelecionado, comentarioDialog, isCorredorSelecionado);
@@ -353,7 +353,7 @@ const AdminLogic = () => {
         </div>
       </div>
 
-      {/* Diálogo de edição de comentário */}
+      {/* Edição de comentário */}
       <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
