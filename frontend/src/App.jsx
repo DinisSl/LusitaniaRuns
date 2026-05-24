@@ -3,8 +3,6 @@ import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Homepage from "./pages/Homepage.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
-import RunnerSignup from "./pages/RunnerSignup.jsx";
-import VolunteerSignup from "./pages/VolunteerSignup.jsx";
 import Admin from "./pages/Admin.jsx";
 import Profile from "./pages/Profile.jsx";
 import Race from "./pages/Race.jsx";
@@ -23,8 +21,6 @@ const App = () => (
           <Route path="/login" element={<Login/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/race/:id" element={<Race/>}/>
-          <Route path="/runnersignup" element={<RunnerSignup/>}/>
-          <Route path="/volunteersignup" element={<VolunteerSignup/>}/>
           <Route path="/admin" element={<Admin/>}/>
           <Route path="/mysignups" element={<MySignups/>}/>
         </Route>

@@ -29,7 +29,7 @@ const LoginManager = () => {
             Logout
           </Button>
           <Button onClick={() => navigate("/profile")} className="h-auto px-3 py-1.5">
-            Profile
+            Perfil
           </Button>
         </>
       ) : (

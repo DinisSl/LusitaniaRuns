@@ -172,11 +172,11 @@ const Profile = () => {
                 <FieldGroup>
                   <div className="flex gap-4">
                     <Field>
-                      <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                      <FieldLabel htmlFor="firstName">Nome</FieldLabel>
                       <Input id="firstName" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                      <FieldLabel htmlFor="lastName">Apelido</FieldLabel>
                       <Input id="lastName" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                     </Field>
                   </div>

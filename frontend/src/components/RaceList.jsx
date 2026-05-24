@@ -20,7 +20,7 @@ const RaceList = () => {
   const [racesList, setRacesList] = useState([]);
 
   const autoplayPlugin = Autoplay({
-    delay: 4000,
+    delay: 2750,
     stopOnInteraction: true,
     stopOnMouseEnter: false,
   });

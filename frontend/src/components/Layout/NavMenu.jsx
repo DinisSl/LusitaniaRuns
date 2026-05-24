@@ -22,25 +22,11 @@ const NavMenu = () => {
 
       {/*Se estivermos na homepage mostrar Minhas Inscrições*/}
       {/*se não mas se tivermos numa pagina de uma corrida mostrar as varias Inscrições*/}
-      {location.pathname === '/' ? (
+      {location.pathname === '/' && (
         <Link to="/mysignups" className={triggerStyle}>
           Minhas Inscrições
         </Link>
-      ) : location.pathname.startsWith('/race/') ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger className={triggerStyle}>
-            Inscrições
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem asChild>
-              <Link to="/runnersignup" className="w-full cursor-pointer">Inscrição Corredor</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/volunteersignup" className="w-full cursor-pointer">Inscrição Voluntário</Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : null}
+      )}
 
 
     </nav>

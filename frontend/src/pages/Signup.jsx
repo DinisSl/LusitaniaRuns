@@ -58,11 +58,11 @@ const Signup = () => {
             <FieldGroup>
               <div className="flex gap-4">
                 <Field>
-                  <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                  <FieldLabel htmlFor="firstName">Nome</FieldLabel>
                   <Input id="firstName" type="text" autoComplete="given-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                  <FieldLabel htmlFor="lastName">Apelido</FieldLabel>
                   <Input id="lastName" type="text" autoComplete="family-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </Field>
               </div>
