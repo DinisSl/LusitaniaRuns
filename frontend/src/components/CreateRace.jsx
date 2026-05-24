@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 const raceSchema = z.object({
   name: z.string().min(1, "O nome da corrida é obrigatório"),
+  location: z.string().min(1, "Localidade é obrigatório"),
   date: z.date({ required_error: "A data e hora são obrigatórias" }),
   details: z.string().optional(),
   image: z
@@ -45,6 +46,7 @@ const CreateRace = () => {
     resolver: zodResolver(raceSchema),
     defaultValues: {
       name: "",
+      location:"",
       date: undefined,
       details: "",
     },
@@ -67,6 +69,7 @@ const CreateRace = () => {
     setIsSubmitting(true);
     const formData = new FormData();
     formData.append("name", data.name);
+    formData.append("location", data.location);
     // Enviar a data no formato ISO (com timezone local)
     formData.append("date", data.date.toISOString());
     formData.append("details", data.details || "");
@@ -103,6 +106,17 @@ const CreateRace = () => {
           </label>
           <Input placeholder="Ex: Corrida da Ponte" {...register("name")} />
           {errors.name && (
+            <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
+          )}
+        </div>
+
+        {/* Localização */}
+        <div>
+          <label className="block text-sm font-medium mb-1 text-foreground">
+           Localidade *
+          </label>
+          <Input placeholder="Ex: Lisboa" {...register("location")} />
+          {errors.location && (
             <p className="text-destructive text-sm mt-1">{errors.name.message}</p>
           )}
         </div>
