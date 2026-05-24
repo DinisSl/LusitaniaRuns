@@ -1,34 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import SignupList from "@/components/SignupList.jsx";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const MySignups = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-
-  if (!user) {
-    return (
-      <>
-        <div className="flex items-center justify-center min-h-[40vh] px-4">
-          <Card className="w-full max-w-sm text-center shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl text-destructive">Acesso negado</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                Tens de estar autenticado para ver as tuas inscrições.
-              </p>
-              <Button className="w-full" onClick={() => navigate("/login")}>
-                Iniciar sessão
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </>
-    );
-  }
 
   return (
     <>

@@ -9,7 +9,8 @@ import Race from "./pages/Race.jsx";
 import MySignups from "./pages/MySignups.jsx";
 
 import Layout from "./components/Layout/Layout.jsx";
-import {AuthProvider} from "@/context/AuthContext.jsx";
+import { AuthProvider } from "@/context/AuthContext.jsx";
+import ProtectedRoute from "@/components/ProtectedRoute.jsx";
 
 const App = () => (
   <BrowserRouter>
@@ -19,10 +20,25 @@ const App = () => (
           <Route index element={<Homepage/>}/>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/profile" element={<Profile/>}/>
           <Route path="/race/:id" element={<Race/>}/>
-          <Route path="/admin" element={<Admin/>}/>
-          <Route path="/mysignups" element={<MySignups/>}/>
+
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile/>
+            </ProtectedRoute>
+          }/>
+
+          <Route path="/mysignups" element={
+            <ProtectedRoute>
+              <MySignups/>
+            </ProtectedRoute>
+          }/>
+
+          <Route path="/admin" element={
+            <ProtectedRoute requireStaff={true}>
+              <Admin/>
+            </ProtectedRoute>
+          }/>
         </Route>
       </Routes>
     </AuthProvider>
