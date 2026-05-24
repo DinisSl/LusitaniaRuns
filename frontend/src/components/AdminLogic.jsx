@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import CreateRace from "@/components/CreateRace";
+import { ROLES } from "@/pages/Race";
 
 const obterTokenCSRF = () => {
   const cookieCSRF = document.cookie
@@ -358,7 +359,7 @@ const atualizarClassificacaoComTroca = async (idCorredor, novaClassificacao, nom
                   <TableRow key={voluntario.id}>
                     <TableCell className="font-medium">{voluntario.user_name}</TableCell>
                     <TableCell>{voluntario.race_name}</TableCell>
-                    <TableCell>{voluntario.role}</TableCell>
+                    <TableCell>{ROLES[voluntario.role] || voluntario.role}</TableCell>
                     <TableCell>
                       <BadgeEstado estado={voluntario.state} />
                     </TableCell>
