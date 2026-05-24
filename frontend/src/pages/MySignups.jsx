@@ -16,7 +16,7 @@ const MySignups = () => {
           )}
         </div>
         <hr className="border-border" />
-        <SignupList />
+        <SignupList/>
       </div>
     </>
   );

@@ -3,14 +3,18 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { ROLES } from "@/pages/Race";
 
 const URL_RUNNERSIGNUPS = "http://localhost:8000/race/api/my-runnersignups/";
@@ -74,11 +78,8 @@ const SignupList = () => {
   }, []);
 
   const cancelSignup = (url, id) => {
-    if (!window.confirm("Tens a certeza que queres cancelar esta inscrição?")) return;
     axios.delete(`${url}${id}/`, {
-      headers: {
-        "X-CSRFToken": getCSRFToken(),
-      },
+      headers: { "X-CSRFToken": getCSRFToken() },
       withCredentials: true,
     })
       .then(() => fetchData())
@@ -132,13 +133,25 @@ const SignupList = () => {
                     <TableCell className="text-muted-foreground">{r.adminComment || "—"}</TableCell>
                     <TableCell className="text-center">
                       {r.state?.toLowerCase() !== "cancelado" && (
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => cancelSignup(URL_RUNNERSIGNUPS, r.id)}
-                        >
-                          Cancelar
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="sm">Cancelar</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Cancelar inscrição?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta ação não pode ser revertida. A tua inscrição será permanentemente removida.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Voltar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => cancelSignup(URL_RUNNERSIGNUPS, r.id)}>
+                                Cancelar inscrição
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       )}
                     </TableCell>
                   </TableRow>
@@ -177,13 +190,25 @@ const SignupList = () => {
                     <TableCell className="text-muted-foreground">{v.adminComment || "—"}</TableCell>
                     <TableCell className="text-center">
                       {v.state?.toLowerCase() !== "cancelado" && (
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => cancelSignup(URL_VOLUNTEERSIGNUPS, v.id)}
-                        >
-                          Cancelar
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="sm">Cancelar</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Cancelar inscrição?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta ação não pode ser revertida. A tua inscrição será permanentemente removida.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Voltar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => cancelSignup(URL_VOLUNTEERSIGNUPS, v.id)}>
+                                  Cancelar inscrição
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       )}
                     </TableCell>
                   </TableRow>
