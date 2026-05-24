@@ -17,7 +17,7 @@ const NavMenu = () => {
 
       {/*Botão exclusivo para o admin*/}
       {user?.is_staff && (
-        <Link to="/admin" className={triggerStyle}>Participantes</Link>
+        <Link to="/admin" className={triggerStyle}>Minha Área</Link>
       )}
 
       {/*Se estivermos na homepage mostrar Minhas Inscrições*/}
