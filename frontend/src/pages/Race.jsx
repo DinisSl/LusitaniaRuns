@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import Description from "../components/Description.jsx";
 import RaceTitle from "@/components/RaceTitle.jsx";
@@ -41,6 +41,9 @@ const Race = () => {
   const [race, setRace] = useState(null);
   const [tipo, setTipo] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [erro, setErro] = useState("");
+  const navigate = useNavigate();
+  const [sucesso, setSucesso] = useState("");
 
   useEffect(() => {
     axios.get(`http://localhost:8000/race/api/race/${id}/`)
@@ -65,8 +68,12 @@ const Race = () => {
             withCredentials: true,
           }
         )
-        .then(() => alert("Inscrição como corredor submetida!"))
-        .catch((error) => console.error("Erro na inscrição:", error));
+        .then(() => {
+          setErro("");
+          setSucesso("Inscrição submetida com sucesso!");
+          setTimeout(() => navigate("/mysignups"), 1500);
+        })
+        .catch((error) => setErro(error.response?.data?.msg || "Erro na inscrição"));
 
     } else if (tipo === "voluntario" && selectedRole) {
       axios
@@ -78,8 +85,12 @@ const Race = () => {
             withCredentials: true,
           }
         )
-        .then(() => alert("Inscrição como voluntário submetida!"))
-        .catch((error) => console.error("Erro na inscrição:", error));
+        .then(() => {
+          setErro("");
+          setSucesso("Inscrição submetida com sucesso!");
+          setTimeout(() => navigate("/mysignups"), 1500);
+        })
+        .catch((error) => setErro(error.response?.data?.msg || "Erro na inscrição"));
     }
   };
 
@@ -94,8 +105,7 @@ const Race = () => {
       </div>
 
       <div className="flex items-center justify-center mb-10">
-        <Dialog onOpenChange={() => { setTipo(""); setSelectedRole(""); }}>
-          <DialogTrigger asChild>
+          <Dialog onOpenChange={() => { setTipo(""); setSelectedRole(""); setErro(""); setSucesso(""); }}>          <DialogTrigger asChild>
             <Button className="cursor-pointer px-8 py-3 text-lg h-auto">
               Inscreve-te agora
             </Button>
@@ -140,6 +150,13 @@ const Race = () => {
                 </div>
               )}
             </div>
+
+            {erro && (
+              <p className="text-sm text-destructive">{erro}</p>
+            )}
+            {sucesso && (
+              <p className="text-sm text-green-600">{sucesso}</p>
+            )}
 
             <DialogFooter className="sm:justify-start gap-2">
               <Button

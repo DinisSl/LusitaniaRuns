@@ -111,9 +111,9 @@ def runnersignups(request):
         race_id = request.data.get('race')
 
         if VolunteerSignup.objects.filter(user=profile, race_id=race_id).exists():
-            return Response({'msg': 'Já está inscrito como voluntário nesta corrida.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Ora bolas!!! Já está inscrito como voluntário nesta corrida.'}, status=status.HTTP_400_BAD_REQUEST)
         if RunnerSignup.objects.filter(user=profile, race_id=race_id).exists():
-            return Response({'msg': 'Já está inscrito como corredor nesta corrida.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Ora bolas!!! Já está inscrito como corredor nesta corrida.'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = RunnerSignupSerializer(data=request.data)
         if serializer.is_valid():
@@ -168,9 +168,9 @@ def volunteersignups(request):
         race_id = request.data.get('race')
 
         if VolunteerSignup.objects.filter(user=profile, race_id=race_id).exists():
-            return Response({'msg': 'Já está inscrito como voluntário nesta corrida.'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Ora bolas!!! Já está inscrito como voluntário nesta corrida.'},status=status.HTTP_400_BAD_REQUEST)
         if RunnerSignup.objects.filter(user=profile, race_id=race_id).exists():
-            return Response({'msg': 'Já está inscrito como corredor nesta corrida.'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'Ora bolas!!! Já está inscrito como corredor nesta corrida.'},status=status.HTTP_400_BAD_REQUEST)
 
         serializer = VolunteerSignupSerializer(data=request.data)
         if serializer.is_valid():
