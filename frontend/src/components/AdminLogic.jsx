@@ -28,7 +28,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import CreateRace from "@/components/CreateRace";
 
-// Função para obter o token CSRF
 const obterTokenCSRF = () => {
   const cookieCSRF = document.cookie
     .split("; ")
@@ -37,20 +36,15 @@ const obterTokenCSRF = () => {
 };
 
 const AdminLogic = () => {
-
   const [inscricoesCorredores, setInscricoesCorredores] = useState([]);
   const [inscricoesVoluntarios, setInscricoesVoluntarios] = useState([]);
-
-  //para o diálogo de comentário
   const [dialogAberto, setDialogAberto] = useState(false);
   const [comentarioDialog, setComentarioDialog] = useState("");
   const [idSelecionado, setIdSelecionado] = useState(null);
   const [isCorredorSelecionado, setIsCorredorSelecionado] = useState(true);
 
-
   const URL_CORREDORES = "http://localhost:8000/race/api/runnersignups/";
   const URL_VOLUNTARIOS = "http://localhost:8000/race/api/volunteersignups/";
-
 
   const buscarInscricoesCorredores = async () => {
     try {
@@ -72,13 +66,11 @@ const AdminLogic = () => {
     }
   };
 
-
   useEffect(() => {
     buscarInscricoesCorredores();
     buscarInscricoesVoluntarios();
   }, []);
 
-  // Função genérica para atualizar um campo qualquer (estado, classificação, comentário)
   const atualizarInscricao = async (id, dadosAtualizados, isCorredor) => {
     const url = isCorredor ? `${URL_CORREDORES}${id}/` : `${URL_VOLUNTARIOS}${id}/`;
     try {
@@ -93,81 +85,44 @@ const AdminLogic = () => {
     }
   };
 
-  // Atualizar estado (APROVADO/REJEITADO)
   const atualizarEstado = async (id, novoEstado, isCorredor) => {
     const sucesso = await atualizarInscricao(id, { state: novoEstado }, isCorredor);
     if (sucesso) {
       if (isCorredor) {
         setInscricoesCorredores((listaAtual) =>
-          listaAtual.map((item) => {
-            if (item.id === id) {
-              return { ...item, state: novoEstado };
-            }
-            return item;
-          })
+          listaAtual.map((item) => (item.id === id ? { ...item, state: novoEstado } : item))
         );
       } else {
         setInscricoesVoluntarios((listaAtual) =>
-          listaAtual.map((item) => {
-            if (item.id === id) {
-              return { ...item, state: novoEstado };
-            }
-            return item;
-          })
+          listaAtual.map((item) => (item.id === id ? { ...item, state: novoEstado } : item))
         );
       }
     }
   };
 
-  // Atualizar classificação (apenas corredores)
-  const atualizarClassificacao = async (id, novaClassificacao) => {
-    const sucesso = await atualizarInscricao(id, { classification: novaClassificacao }, true);
-    if (sucesso) {
-      setInscricoesCorredores((listaAtual) =>
-        listaAtual.map((item) => {
-          if (item.id === id) {
-            return { ...item, classification: novaClassificacao };
-          }
-          return item;
-        })
-      );
-    }
-  };
 
-  // Atualizar comentário
+
   const atualizarComentario = async (id, novoComentario, isCorredor) => {
     const sucesso = await atualizarInscricao(id, { adminComment: novoComentario }, isCorredor);
     if (sucesso) {
       if (isCorredor) {
         setInscricoesCorredores((listaAtual) =>
-          listaAtual.map((item) => {
-            if (item.id === id) {
-              return { ...item, adminComment: novoComentario };
-            }
-            return item;
-          })
+          listaAtual.map((item) => (item.id === id ? { ...item, adminComment: novoComentario } : item))
         );
       } else {
         setInscricoesVoluntarios((listaAtual) =>
-          listaAtual.map((item) => {
-            if (item.id === id) {
-              return { ...item, adminComment: novoComentario };
-            }
-            return item;
-          })
+          listaAtual.map((item) => (item.id === id ? { ...item, adminComment: novoComentario } : item))
         );
       }
     }
   };
 
-  // editar comentário
   const abrirDialogComentario = (id, comentarioAtual, isCorredor) => {
     setIdSelecionado(id);
     setComentarioDialog(comentarioAtual || "");
     setIsCorredorSelecionado(isCorredor);
     setDialogAberto(true);
   };
-
 
   const salvarComentario = () => {
     if (idSelecionado !== null) {
@@ -176,26 +131,110 @@ const AdminLogic = () => {
     }
   };
 
-  // Componente para exibir o badge
   const BadgeEstado = ({ estado }) => {
     if (estado === "APROVADO") return <Badge className="bg-green-600 text-white">Aprovado</Badge>;
     if (estado === "REJEITADO") return <Badge variant="destructive">Rejeitado</Badge>;
     return <Badge variant="secondary">Pendente</Badge>;
   };
 
-  // Contar quantos aprovados existem numa corrida (para gerar opções de classificação)
   const contarAprovadosPorCorrida = (nomeCorrida) => {
     return inscricoesCorredores.filter(
-      (inscricao) => inscricao.race_name === nomeCorrida && inscricao.state === "APROVADO"
+      (i) => i.race_name === nomeCorrida && i.state === "APROVADO"
     ).length;
   };
 
+  const obterDonoDaClassificacao = (nomeCorrida, classificacao, excludeId) => {
+    const dono = inscricoesCorredores.find(
+      (insc) =>
+        insc.race_name === nomeCorrida &&
+        insc.state === "APROVADO" &&
+        Number(insc.classification) === Number(classificacao) &&
+        insc.id !== excludeId
+    );
+    return dono ? dono.id : null;
+  };
+
+  // atualizar a classificação de um único corredor
+const atualizarClassificacaoSimples = async (corredorId, novaClassificacao) => {
+  const sucesso = await atualizarInscricao(corredorId, { classification: novaClassificacao }, true);
+  return sucesso;
+};
+
+// Troca as classificações entre dois corredores
+const trocarClassificacao = async (idPrimeiro, classificacaoPrimeiro, idSegundo, classificacaoSegundo) => {
+  const primeiroAtualizado = await atualizarClassificacaoSimples(idPrimeiro, null);
+  if (!primeiroAtualizado) {
+    alert("Erro: não foi possível remover a classificação temporariamente.");
+    return false;
+  }
+
+
+  const segundoAtualizado = await atualizarClassificacaoSimples(idSegundo, classificacaoPrimeiro);
+  if (!segundoAtualizado) {
+    await atualizarClassificacaoSimples(idPrimeiro, classificacaoPrimeiro);
+    alert("Erro: não foi possível transferir a classificação para o segundo corredor.");
+    return false;
+  }
+
+
+  const primeiroComNova = await atualizarClassificacaoSimples(idPrimeiro, classificacaoSegundo);
+  if (!primeiroComNova) {
+    await atualizarClassificacaoSimples(idSegundo, classificacaoSegundo);
+    await atualizarClassificacaoSimples(idPrimeiro, classificacaoPrimeiro);
+    alert("Erro: não foi possível completar a troca. Operação revertida.");
+    return false;
+  }
+
+  // Tudo correto
+  return true;
+};
+
+
+const atualizarClassificacaoComTroca = async (idCorredor, novaClassificacao, nomeCorrida, classificacaoAntiga) => {
+  // Se o valor escolhido for o mesmo que já tem, não faz nada
+  if (Number(novaClassificacao) === Number(classificacaoAntiga)) {
+    return;
+  }
+
+
+  const idOutroCorredor = obterDonoDaClassificacao(nomeCorrida, novaClassificacao, idCorredor);
+
+  if (idOutroCorredor === null) {
+    // Caso simples: ninguém tem essa classificação, então só atualiza o corredor atual
+    const sucesso = await atualizarClassificacaoSimples(idCorredor, novaClassificacao);
+    if (sucesso) {
+      setInscricoesCorredores((listaAtual) =>
+        listaAtual.map((item) =>
+          item.id === idCorredor ? { ...item, classification: novaClassificacao } : item
+        )
+      );
+    } else {
+      alert("Erro ao atualizar classificação.");
+    }
+  } else {
+    const trocaOK = await trocarClassificacao(
+      idCorredor,
+      classificacaoAntiga,
+      idOutroCorredor,
+      novaClassificacao
+    );
+    if (trocaOK) {
+      setInscricoesCorredores((listaAtual) =>
+        listaAtual.map((item) => {
+          if (item.id === idCorredor) return { ...item, classification: novaClassificacao };
+          if (item.id === idOutroCorredor) return { ...item, classification: classificacaoAntiga };
+          return item;
+        })
+      );
+    }
+  }
+};
+
   return (
     <div className="p-6 space-y-8">
-      {/* Formulário para criar nova corrida */}
       <CreateRace />
 
-      {/* Seção de Corredores */}
+      {/* Corredores */}
       <div>
         <h2 className="text-xl font-bold mb-4">Inscrições de Corredores</h2>
         <div className="rounded-md border overflow-x-auto">
@@ -218,74 +257,82 @@ const AdminLogic = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                inscricoesCorredores.map((corredor) => (
-                  <TableRow key={corredor.id}>
-                    <TableCell className="font-medium">{corredor.user_name}</TableCell>
-                    <TableCell>{corredor.race_name}</TableCell>
-                    <TableCell>
-                      {corredor.state === "APROVADO" ? (
-                        <Select
-                          value={corredor.classification ? String(corredor.classification) : undefined}
-                          onValueChange={(valor) => atualizarClassificacao(corredor.id, valor)}
-                        >
-                          <SelectTrigger className="w-[100px]">
-                            <SelectValue placeholder="N/A" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: contarAprovadosPorCorrida(corredor.race_name) }, (_, i) => i + 1).map(
-                              (num) => (
+                inscricoesCorredores.map((corredor) => {
+                  const totalAprovados = contarAprovadosPorCorrida(corredor.race_name);
+                  return (
+                    <TableRow key={corredor.id}>
+                      <TableCell className="font-medium">{corredor.user_name}</TableCell>
+                      <TableCell>{corredor.race_name}</TableCell>
+                      <TableCell>
+                        {corredor.state === "APROVADO" ? (
+                          <Select
+                            value={corredor.classification ? String(corredor.classification) : undefined}
+                            onValueChange={async (valor) => {
+                              await atualizarClassificacaoComTroca(
+                                corredor.id,
+                                valor,
+                                corredor.race_name,
+                                corredor.classification
+                              );
+                            }}
+                          >
+                            <SelectTrigger className="w-[100px]">
+                              <SelectValue placeholder="N/A" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from({ length: totalAprovados }, (_, i) => i + 1).map((num) => (
                                 <SelectItem key={num} value={String(num)}>
                                   {num}º
                                 </SelectItem>
-                              )
-                            )}
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <span className="text-gray-400">N/A</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <BadgeEstado estado={corredor.state} />
-                    </TableCell>
-                    <TableCell className="max-w-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate">{corredor.adminComment || "—"}</span>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <span className="text-gray-400">N/A</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <BadgeEstado estado={corredor.state} />
+                      </TableCell>
+                      <TableCell className="max-w-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="truncate">{corredor.adminComment || "—"}</span>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => abrirDialogComentario(corredor.id, corredor.adminComment, true)}
+                          >
+                            ✏️
+                          </Button>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
                         <Button
                           size="sm"
-                          variant="ghost"
-                          onClick={() => abrirDialogComentario(corredor.id, corredor.adminComment, true)}
+                          variant="outline"
+                          className="border-green-600 text-green-600 hover:bg-green-50"
+                          onClick={() => atualizarEstado(corredor.id, "APROVADO", true)}
                         >
-                          ✏️
+                          Aprovar
                         </Button>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-green-600 text-green-600 hover:bg-green-50"
-                        onClick={() => atualizarEstado(corredor.id, "APROVADO", true)}
-                      >
-                        Aprovar
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => atualizarEstado(corredor.id, "REJEITADO", true)}
-                      >
-                        Rejeitar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => atualizarEstado(corredor.id, "REJEITADO", true)}
+                        >
+                          Rejeitar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>
         </div>
       </div>
 
-      {/* Seção de Voluntários */}
+      {/* Voluntários */}
       <div>
         <h2 className="text-xl font-bold mb-4">Inscrições de Voluntários</h2>
         <div className="rounded-md border overflow-x-auto">
@@ -353,7 +400,7 @@ const AdminLogic = () => {
         </div>
       </div>
 
-      {/* Edição de comentário */}
+      {/* Diálogo */}
       <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
