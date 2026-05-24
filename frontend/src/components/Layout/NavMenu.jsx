@@ -11,9 +11,9 @@ const NavMenu = () => {
     <nav className="flex items-center gap-2">
 
       {/*Não mostrar o botão Home se não estivermos na Homepage*/}
-      {location.pathname !== '/' && (
+      {/*{location.pathname !== '/' && (*/}
         <Link to="/" className={triggerStyle}>Home</Link>
-      )}
+      {/*)}*/}
 
       {/*Botão exclusivo para o admin*/}
       {user?.is_staff && (
@@ -22,11 +22,11 @@ const NavMenu = () => {
 
       {/*Se estivermos na homepage mostrar Minhas Inscrições*/}
       {/*se não mas se tivermos numa pagina de uma corrida mostrar as varias Inscrições*/}
-      {location.pathname === '/' && (
+      {/*{location.pathname === '/' && (*/}
         <Link to="/mysignups" className={triggerStyle}>
           Minhas Inscrições
         </Link>
-      )}
+      {/*)}*/}
 
 
     </nav>

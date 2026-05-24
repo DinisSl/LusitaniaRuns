@@ -96,8 +96,8 @@ const Race = () => {
       <div className="flex items-center justify-center mb-10">
         <Dialog onOpenChange={() => { setTipo(""); setSelectedRole(""); }}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="p-2 text-lg h-auto">
-              Junte-se a nós!!!
+            <Button className="cursor-pointer px-8 py-3 text-lg h-auto">
+              Inscreve-te agora
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
